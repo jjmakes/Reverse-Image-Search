@@ -1,25 +1,66 @@
 import numpy as np
-import cv2
-import os
+import cv2, os, knn
 
-# Searching through a provided directory to prepare access for cv2
-
+# Parse through a dataset to prepare face analysis
 img_dict = {}
+face_count = 0
 
 train_dir = 'samples'
 
 for f_name in os.listdir(train_dir):
     for p_img in os.listdir(os.path.join(train_dir, f_name)):
+        face_count += 1
         if f_name in img_dict.keys():
             img_dict[f_name].append(os.path.join(train_dir, f_name, p_img))
         else:
             img_dict[f_name] = [os.path.join(train_dir, f_name, p_img)]
 
+# Initialize haar cascade filters provided by
+# https://github.com/opencv/opencv/tree/master/data/haarcascades
+face_cascade = cv2.CascadeClassifier("./haarcascades/haarcascade_frontalface_default.xml")
+
+# Used to pad around extracted faces
+offset = 10
+
+# Metrics for counting detected faces
+detect_count = 0
+
+# Looping through all image directory values
+for person in img_dict:
+    for photo in img_dict[person]:
+        # Reading the photo into the img var
+        img = cv2.imread(photo)
+        cv2.imshow('photo', img)
 
 
-img = cv2.imread(img_dict['Aaron_Peirsol'][0])
-g_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # Apply grayscale to the image
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-cv2.imshow('image',g_img)
+        # Face Detection
+        # Cascading params: image, scaleFactor, minNeighbors
+        face = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+        if len(face) == 0:
+            continue
+        detect_count += 1
+
+        x,y,w,h = face[0]
+
+        # Drawing a rectangle around the face coordinates
+        cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2) 
+
+        # Slicing face from original image
+        face_cut = img[y-offset:y+h+offset,x-offset:x+w+offset]
+
+        # Resizing faces to 128x128px
+        face_cut = cv2.resize(face_cut,(128,128))
+        
+        # Display each face and wait for keypress before proceeding
+        cv2.imshow('crop', face_cut)
+        cv2.waitKey(0)
+
+print('Detected ' + str(detect_count/face_count*100) + '%')
+print('(' + str(detect_count) + '/' + str(face_count) + ')')
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()
