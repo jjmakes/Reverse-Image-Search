@@ -6,6 +6,7 @@ img_dict = {}
 face_count = 0
 
 train_dir = 'samples'
+data_path = './data/'
 
 for f_name in os.listdir(train_dir):
     for p_img in os.listdir(os.path.join(train_dir, f_name)):
@@ -25,8 +26,12 @@ offset = 10
 # Metrics for counting detected faces
 detect_count = 0
 
+
 # Looping through all image directory values
 for person in img_dict:
+    # Create a new array for person's images 
+    # print(person)
+    # face_data = []
     for photo in img_dict[person]:
         # Reading the photo into the img var
         img = cv2.imread(photo)
@@ -47,7 +52,7 @@ for person in img_dict:
         x,y,w,h = face[0]
 
         # Drawing a rectangle around the face coordinates
-        cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2) 
+        # cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2) 
 
         # Slicing face from original image
         face_cut = img[y-offset:y+h+offset,x-offset:x+w+offset]
@@ -58,6 +63,11 @@ for person in img_dict:
         # Display each face and wait for keypress before proceeding
         cv2.imshow('crop', face_cut)
         cv2.waitKey(0)
+    # Save the dataset
+    # face_data = np.asarray(face_data)
+    # face_data = face_data.reshape((face_data.shape[0],-1))
+    # np.save(dataset_path + person+ '.npy', face_data)
+    # print("Saved " + person + "'s data to /data")
 
 print('Detected ' + str(detect_count/face_count*100) + '%')
 print('(' + str(detect_count) + '/' + str(face_count) + ')')
