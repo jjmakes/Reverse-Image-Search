@@ -4,7 +4,7 @@ import numpy as np
 def distance(v1, v2):
     return np.sqrt(((v1-v2)**2).sum())
 
-def knn(train, test, k=5):
+def predict(train, test, k=5):
     dist = []
 
     for i in range(train.shape[0]):

@@ -1,76 +1,48 @@
 import numpy as np
-import cv2, os, knn
+import os, json
 
-# Parse through a dataset to prepare face analysis
-img_dict = {}
-face_count = 0
+dataset_path = 'dataset/'
 
-train_dir = 'samples'
-data_path = './data/'
+face_data = []
+labels = []
 
-for f_name in os.listdir(train_dir):
-    for p_img in os.listdir(os.path.join(train_dir, f_name)):
-        face_count += 1
-        if f_name in img_dict.keys():
-            img_dict[f_name].append(os.path.join(train_dir, f_name, p_img))
-        else:
-            img_dict[f_name] = [os.path.join(train_dir, f_name, p_img)]
+class_id = 0 # Labels for the given file
+names = {} # Mapping id & name
 
-# Initialize haar cascade filters provided by
-# https://github.com/opencv/opencv/tree/master/data/haarcascades
-face_cascade = cv2.CascadeClassifier("./haarcascades/haarcascade_frontalface_default.xml")
+# Data Prep
+for fx in os.listdir(dataset_path):
 
-# Used to pad around extracted faces
-offset = 10
+    if fx.endswith('.npy'):
 
-# Metrics for counting detected faces
-detect_count = 0
+        # Create class_id & name mapping
+        names[class_id] = fx[:-4] # index removes .npy from name
+        print('Loaded ' + fx)
 
+        data_item = np.load(dataset_path+fx)
+        face_data.append(data_item)
 
-# Looping through all image directory values
-for person in img_dict:
-    # Create a new array for person's images 
-    # print(person)
-    # face_data = []
-    for photo in img_dict[person]:
-        # Reading the photo into the img var
-        img = cv2.imread(photo)
-        cv2.imshow('photo', img)
+        # Create Labels for the class
+        target = class_id*np.ones((data_item.shape[0],))
+        class_id += 1
+        labels.append(target)
 
+face_dataset = np.concatenate(face_data,axis=0)
+face_labels = np.concatenate(labels,axis=0).reshape((-1,1))
 
-        # Apply grayscale to the image
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+print(face_dataset.shape)
+print(face_labels.shape)
 
-        # Face Detection
-        # Cascading params: image, scaleFactor, minNeighbors
-        face = face_cascade.detectMultiScale(gray, 1.3, 5)
+trainset = np.concatenate((face_dataset,face_labels),axis=1)
 
-        if len(face) == 0:
-            continue
-        detect_count += 1
+# Saving label names
+json = json.dumps(names)
+f = open('names.json', 'w')
+f.write(json)
+f.close()
 
-        x,y,w,h = face[0]
+# Saving model
+np.save('model.npy', trainset)
 
-        # Drawing a rectangle around the face coordinates
-        # cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2) 
+print("Model finished training and saved to model.npy.\nShape:\n")
 
-        # Slicing face from original image
-        face_cut = img[y-offset:y+h+offset,x-offset:x+w+offset]
-
-        # Resizing faces to 128x128px
-        face_cut = cv2.resize(face_cut,(128,128))
-        
-        # Display each face and wait for keypress before proceeding
-        cv2.imshow('crop', face_cut)
-        cv2.waitKey(0)
-    # Save the dataset
-    # face_data = np.asarray(face_data)
-    # face_data = face_data.reshape((face_data.shape[0],-1))
-    # np.save(dataset_path + person+ '.npy', face_data)
-    # print("Saved " + person + "'s data to /data")
-
-print('Detected ' + str(detect_count/face_count*100) + '%')
-print('(' + str(detect_count) + '/' + str(face_count) + ')')
-
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+print(trainset.shape)
