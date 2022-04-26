@@ -19,17 +19,8 @@ kernel1 = np.array(
     ]
 )
 
-identity = cv2.filter2D(src=image, ddepth=-1, kernel=kernel1)
-
-cv2.imshow("Original", image)
-cv2.imshow("Identity", identity)
-
-cv2.waitKey()
-cv2.imwrite("identity.jpg", identity)
-cv2.destroyAllWindows()
-
 # Crop the image
-image = detect.crop(image)
+img = detect.crop(image)
 
 # Apply edge detection kernel
 h_kernel = np.array(
@@ -46,10 +37,14 @@ v_kernel = np.array(
         [1, 1, 1],
     ]
 )
-img = cv2.filter2D(src=image, ddepth=-1, kernel=h_kernel) + cv2.filter2D(
-    src=image, ddepth=-1, kernel=v_kernel
+img = cv2.filter2D(src=img, ddepth=-1, kernel=h_kernel) + cv2.filter2D(
+    src=img, ddepth=-1, kernel=v_kernel
 )
 
+# Make grayscale
+img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+print(img)
 cv2.imshow("Original", image)
 cv2.imshow("Kernel Edge", img)
 
