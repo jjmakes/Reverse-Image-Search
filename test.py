@@ -1,5 +1,5 @@
 import numpy as np
-import os, knn, detect, cv2, json
+import os, knn, detect, cv2, json, convoluted
 
 test_dir = 'tests'
 
@@ -18,14 +18,16 @@ for f_name in os.listdir(test_dir):
         print(f"Face not detected in test image: {photo_path}.\n")
         continue
 
+    face_filter = convoluted.edgy_af(face_cut)
+
     # Make face prediction
-    out = knn.predict(trainset,face_cut.flatten())
+    out = knn.predict(trainset,face_filter.flatten())
     pred_name = names[str(int(out))];
 
     print("Image " + photo_path + " is predicted to be: ")
     print(pred_name + "\n")
 
-    cv2.imshow('tests', face_cut)
+    cv2.imshow('tests', face_filter)
     cv2.waitKey(0)
 
 cv2.destroyAllWindows()

@@ -4,14 +4,15 @@ import numpy as np
 def distance(v1, v2):
     return np.sqrt(((v1-v2)**2).sum())
 
-def predict(train, test, k=5):
+def predict(train, test, k=3):
     dist = []
 
     for i in range(train.shape[0]):
         # Get vector and label
         ix = train[i, :-1]
         iy = train[i, -1]
-
+        print(test)
+        print(ix)
         # Computing the distance from the test point
         d = distance(test, ix)
         dist.append([d,iy])

@@ -1,5 +1,5 @@
 import numpy as np
-import os, detect
+import os, detect, convoluted
 
 # Parse through a dataset to prepare face analysis
 img_dict = {}
@@ -27,15 +27,19 @@ for person in img_dict:
 
     for photo in img_dict[person]:
 
+        print(photo)
+
         face_cut = detect.crop(photo)
 
         if len(face_cut) == 0:
             continue
 
+        face_filter = convoluted.edgy_af(face_cut)
+
         detect_count += 1
         
         # Add face data to array for dataset export
-        face_data.append(face_cut)
+        face_data.append(face_filter)
 
 
     # Save the dataset

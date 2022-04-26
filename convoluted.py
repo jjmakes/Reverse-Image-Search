@@ -4,13 +4,10 @@ import numpy as np
 import detect
 
 
-def edgy_af(image):
+def edgy_af(img):
     """
     Apply crop, edge detection, and grayscale filters to input image
     """
-
-    # Crop the image
-    img = detect.crop(image)
 
     # Apply edge detection kernel
     h_kernel = np.array(
@@ -42,8 +39,8 @@ if __name__ == "__main__":
     img = edgy_af(image)
 
     print(img)
-    cv2.imshow("Original", image)
-    cv2.imshow("Kernel Edge", img)
+    # cv2.imshow("Original", image)
+    # cv2.imshow("Kernel Edge", img)
 
     cv2.waitKey()
     cv2.imwrite("convoluted.jpg", img)
