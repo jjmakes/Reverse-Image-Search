@@ -4,50 +4,47 @@ import numpy as np
 import detect
 
 
-image = cv2.imread("lfw/Abdul_Rahman/Abdul_Rahman_0001.jpg")
+def edgy_af(image):
+    """
+    Apply crop, edge detection, and grayscale filters to input image
+    """
 
-# Print error message if image is null
-if image is None:
-    print("Could not read image")
+    # Crop the image
+    img = detect.crop(image)
 
-# Apply identity kernel
-kernel1 = np.array(
-    [
-        [0, 0, 0],
-        [0, 1, 0],
-        [0, 0, 0],
-    ]
-)
+    # Apply edge detection kernel
+    h_kernel = np.array(
+        [
+            [-1, 0, 1],
+            [-1, 0, 1],
+            [-1, 0, 1],
+        ]
+    )
+    v_kernel = np.array(
+        [
+            [-1, -1, -1],
+            [0, 0, 0],
+            [1, 1, 1],
+        ]
+    )
+    img = cv2.filter2D(src=img, ddepth=-1, kernel=h_kernel) + cv2.filter2D(
+        src=img, ddepth=-1, kernel=v_kernel
+    )
 
-# Crop the image
-img = detect.crop(image)
+    # Make grayscale
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-# Apply edge detection kernel
-h_kernel = np.array(
-    [
-        [-1, 0, 1],
-        [-1, 0, 1],
-        [-1, 0, 1],
-    ]
-)
-v_kernel = np.array(
-    [
-        [-1, -1, -1],
-        [0, 0, 0],
-        [1, 1, 1],
-    ]
-)
-img = cv2.filter2D(src=img, ddepth=-1, kernel=h_kernel) + cv2.filter2D(
-    src=img, ddepth=-1, kernel=v_kernel
-)
+    return img
 
-# Make grayscale
-img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-print(img)
-cv2.imshow("Original", image)
-cv2.imshow("Kernel Edge", img)
+if __name__ == "__main__":
+    image = cv2.imread("lfw/Abdul_Rahman/Abdul_Rahman_0001.jpg")
+    img = edgy_af(image)
 
-cv2.waitKey()
-cv2.imwrite("convoluted.jpg", img)
-cv2.destroyAllWindows()
+    print(img)
+    cv2.imshow("Original", image)
+    cv2.imshow("Kernel Edge", img)
+
+    cv2.waitKey()
+    cv2.imwrite("convoluted.jpg", img)
+    cv2.destroyAllWindows()
