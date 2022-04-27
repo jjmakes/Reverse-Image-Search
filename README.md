@@ -6,6 +6,8 @@ Team Member Contacts:
 - Thomas Lanzetti tl362@njit.edu
 - Andrew Kritzler ak2426@njit.edu
 
+[LFW dataset](http://vis-www.cs.umass.edu/lfw/)
+
 ## Installation
 
 Install the Python dependencies using pip.
