@@ -19,8 +19,8 @@ The overall visual search architecture model we aimed to follow is as such: a qu
 
 The file “convoluted.py” applies crop, edge detection, and grayscale filters to an input image. It does this by first applying an edge detection kernel, using the cv2 filter2D method. At first, we used only the horizontal edge detection kernel, but after trying the vertical one instead we noticed that each captured features the other did not. As a result of this, we decided to combine both the horizontal and vertical edge detections by adding them, with the goal of extracting the important features of both. Finally, the cv2 method cvtColor is used to make the image grayscale.
 
-# Reverse Image Search Improvement
-## MTCNN and FaceNet
+## Reverse Image Search Improvement
+### MTCNN and FaceNet
 
 Functions for acquiring the images, manipulating with cv2, and converting them to numpy arrays are almost identical to the methods of the baseline notebook.
 
@@ -36,7 +36,7 @@ FaceNet takes a person's face as input and outputs an "embedding" vector of the 
 
 FaceNet learns with triplet loss, where a randomly selected anchor is compared to positive and negative examples and reorganized accordingly.
 
-## Implementation
+### Implementation
 
 The approach taken for comparing the anchor is what's referred to as "one-shot" classification, which is why FaceNet is known as a Siamese Network.
 
