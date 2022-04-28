@@ -1,12 +1,10 @@
-# CS370-002-Project
+# Reverse Visual Search (CS370-002-Project)
 
 - John Makely (jm672@njit.edu)
 - Thomas Lanzetti (tl362@njit.edu)
 - Andrew Kritzler (ak2426@njit.edu)
 
 [LFW dataset](http://vis-www.cs.umass.edu/lfw/)
-
-# Reverse Visual Search
 
 ## Introduction
 In many areas of study and work, we are interested in finding visual similarities. Reverse visual search can be used to find these important visual similarities of many things, such as artifacts, scenery, and even people’s faces. The term person of interest (PoI) is used to indicate that we reverse search on images of people’s faces. In this project, we implement methods and systems to identify a person of interest’s name by their face when the queries are visual (in the form of an image).
