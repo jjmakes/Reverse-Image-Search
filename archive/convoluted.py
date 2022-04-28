@@ -35,12 +35,12 @@ def edgy_af(img):
 
 
 if __name__ == "__main__":
-    image = cv2.imread("lfw/Abdul_Rahman/Abdul_Rahman_0001.jpg")
+    image = cv2.imread("samples/Aaron_Eckhart/Aaron_Eckhart_0001.jpg")
     img = edgy_af(image)
 
     print(img)
-    # cv2.imshow("Original", image)
-    # cv2.imshow("Kernel Edge", img)
+    cv2.imshow("Original", image)
+    cv2.imshow("Kernel Edge", img)
 
     cv2.waitKey()
     cv2.imwrite("convoluted.jpg", img)
